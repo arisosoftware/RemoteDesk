@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace RemoteAccess
 {
-   public class Program
+    public class Program
     {
 
         static
@@ -22,37 +22,37 @@ namespace RemoteAccess
 
         public static void RemoteConnect(MSTSCConfig cfg)
         {
-         
 
-                AxMSTSCLib.AxMsRdpClient4 rdpc = new AxMSTSCLib.AxMsRdpClient4();
 
-                rdpc.UserName = cfg.usrname;
-                rdpc.AdvancedSettings2.ClearTextPassword = cfg.password;
-                rdpc.Server = cfg.ServerIP;
-                rdpc.AdvancedSettings2.RDPPort = int.Parse(cfg.PortNum);
-                rdpc.Domain = ".";
-                rdpc.Connect();
-                
-                //////AxMSTSCLib.AxMsTscAxNotSafeForScripting remoteserver = new AxMSTSCLib.AxMsTscAxNotSafeForScripting();
-         
-                //////// 
-                //////// RDP
-                //////// 
-                //////remoteserver.UserName = cfg.usrname;
+            AxMSTSCLib.AxMsRdpClient4 rdpc = new AxMSTSCLib.AxMsRdpClient4();
 
-                //////remoteserver.Server = cfg.ServerIP;
-                 
-                //////remoteserver.SecuredSettings.FullScreen = 1;
-                //////remoteserver.AdvancedSettings.Compress = 1;
+            rdpc.UserName = cfg.usrname;
+            rdpc.AdvancedSettings2.ClearTextPassword = cfg.password;
+            rdpc.Server = cfg.ServerIP;
+            rdpc.AdvancedSettings2.RDPPort = int.Parse(cfg.PortNum);
+            rdpc.Domain = ".";
+            rdpc.Connect();
 
-                //////MSTSCLib.IMsTscNonScriptable secured = (MSTSCLib.IMsTscNonScriptable)remoteserver.SecuredSettings;
-                //////secured.ClearTextPassword = cfg.password;
-                //////remoteserver.Connect();
+            //////AxMSTSCLib.AxMsTscAxNotSafeForScripting remoteserver = new AxMSTSCLib.AxMsTscAxNotSafeForScripting();
 
-            
+            //////// 
+            //////// RDP
+            //////// 
+            //////remoteserver.UserName = cfg.usrname;
+
+            //////remoteserver.Server = cfg.ServerIP;
+
+            //////remoteserver.SecuredSettings.FullScreen = 1;
+            //////remoteserver.AdvancedSettings.Compress = 1;
+
+            //////MSTSCLib.IMsTscNonScriptable secured = (MSTSCLib.IMsTscNonScriptable)remoteserver.SecuredSettings;
+            //////secured.ClearTextPassword = cfg.password;
+            //////remoteserver.Connect();
+
+
         }
 
-       public  static void ReadAndRemoteLogin()
+        public static void ReadAndRemoteLogin()
         {
 
 
@@ -60,44 +60,44 @@ namespace RemoteAccess
 
 
             string IPdefine = File.ReadAllText("..\\..\\P01.txt");
-     
 
-         //   string IPdefine = webclientForIP.DownloadString("https://raw.githubusercontent.com/arisosoftware/RemoteDesk/master/RemoteAccess/P01.txt");
+
+            //   string IPdefine = webclientForIP.DownloadString("https://raw.githubusercontent.com/arisosoftware/RemoteDesk/master/RemoteAccess/P01.txt");
             string decoded = aes.DecryptString(IPdefine);
             Console.WriteLine(decoded);
 
-       
+
             MSTSCConfig cfg = SerializeFromString(decoded) as MSTSCConfig;
 
-            RemoteConnect(cfg);
+            string file = File.ReadAllText("remoteserver.RDP");
+
+           file =  file.Replace("ServerIP", cfg.ServerIP);
+            File.WriteAllText("server.RDP", file);
+
+            Console.WriteLine("请 输入密码 111111AAAAAA@  或者 control -P 复制");
 
 
-            //MSTSCLib.IMsRdpClient7 client = n 
+            Clipboard.SetDataObject("111111AAAAAA@");
 
+            //// try again...
+            //System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            //proc.EnableRaisingEvents = false;
+            //proc.StartInfo.FileName = "rundll32.exe";
+            //proc.StartInfo.Arguments = "shell32,OpenAs_RunDLL " + "remoteserver.RDP";
+            //proc.Start();
 
-            //var rdpGateway = "gw.domain.local";
-            //var rdpServer = "rdsh.domain.local";
-
-            //rdp.Server = rdpServer;
-            //rdp.AdvancedSettings7.EnableCredSspSupport = true;
-            //rdp.AdvancedSettings8.NegotiateSecurityLayer = true;
-            //rdp.AdvancedSettings7.AuthenticationLevel = 0;
-
-            //if (!string.IsNullOrWhiteSpace(rdpGateway))
-            //{
-            //    rdp.TransportSettings3.GatewayHostname = rdpGateway;
-            //    rdp.TransportSettings3.GatewayUsageMethod = 1;
-            //    rdp.TransportSettings3.GatewayCredsSource = 0;
-            //    rdp.TransportSettings3.GatewayProfileUsageMethod = 1;
-            //}
-
-            //rdp.Connect();
+ 
+            System.Diagnostics.Process shellProcess = new System.Diagnostics.Process();
+            shellProcess.StartInfo.FileName = "mstsc.exe";
+            shellProcess.StartInfo.Arguments = "server.RDP";
+            shellProcess.StartInfo.ErrorDialog = true;
+            shellProcess.Start();
 
         }
 
         public static object SerializeFromString(string fromSerialize)
         {
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof( MSTSCConfig));
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(MSTSCConfig));
 
             using (StringReader textReader = new StringReader(fromSerialize))
             {
@@ -106,7 +106,7 @@ namespace RemoteAccess
             }
         }
 
-          [STAThread]
+        [STAThread]
         static void Main(string[] args)
         {
 
@@ -127,25 +127,25 @@ namespace RemoteAccess
             }
 
 
-            //https://gitee.com/huaant/pv01/blob/master/P01.txt
+            ////https://gitee.com/huaant/pv01/blob/master/P01.txt
 
-            //WebClient webclientForIP = new WebClient();
-            //string IPdefine = webclientForIP.DownloadString("https://gitee.com/huaant/pv01/blob/master/P01.txt");
- 
-            //string decoded = aes.DecryptString(IPdefine);
+            ////WebClient webclientForIP = new WebClient();
+            ////string IPdefine = webclientForIP.DownloadString("https://gitee.com/huaant/pv01/blob/master/P01.txt");
+
+            ////string decoded = aes.DecryptString(IPdefine);
 
 
 
-            MSTSCConfig cfg = new MSTSCConfig();
-            cfg.ServerIP = "23.100.96.142";
-            cfg.PortNum = string.Empty;
-            cfg.usrname = ".\\superqiu";
-            cfg.password = "111111AAAAAA@";
+            //MSTSCConfig cfg = new MSTSCConfig();
+            //cfg.ServerIP = "23.100.96.142";
+            //cfg.PortNum = string.Empty;
+            //cfg.usrname = ".\\superqiu";
+            //cfg.password = "111111AAAAAA@";
 
-            string text = aes.SerializeToString(cfg);
+            //string text = aes.SerializeToString(cfg);
 
-            string encrpyt = aes.EncryptString(text);
-            string decript = aes.DecryptString(encrpyt);
+            //string encrpyt = aes.EncryptString(text);
+            //string decript = aes.DecryptString(encrpyt);
 
         }
 
@@ -163,7 +163,7 @@ namespace RemoteAccess
             cfg.usrname = Console.ReadLine();
 
 
-            cfg.PortNum = DefaultSetup(cfg.PortNum,"3389");
+            cfg.PortNum = DefaultSetup(cfg.PortNum, "3389");
             cfg.ServerIP = DefaultSetup(cfg.ServerIP, "23.100.96.142");
             cfg.usrname = DefaultSetup(cfg.usrname, ".\\superqiu");
             cfg.password = DefaultSetup(cfg.password, "111111AAAAAA@");
@@ -190,7 +190,7 @@ namespace RemoteAccess
             if (string.IsNullOrWhiteSpace(input))
                 return define;
 
-            string rtn = input.Replace("\n","").Trim();
+            string rtn = input.Replace("\n", "").Trim();
             if (string.IsNullOrWhiteSpace(rtn))
                 rtn = define;
 
@@ -203,3 +203,28 @@ namespace RemoteAccess
     }
 
 }
+
+
+//RemoteConnect(cfg);
+
+
+//MSTSCLib.IMsRdpClient7 client = n 
+
+
+//var rdpGateway = "gw.domain.local";
+//var rdpServer = "rdsh.domain.local";
+
+//rdp.Server = rdpServer;
+//rdp.AdvancedSettings7.EnableCredSspSupport = true;
+//rdp.AdvancedSettings8.NegotiateSecurityLayer = true;
+//rdp.AdvancedSettings7.AuthenticationLevel = 0;
+
+//if (!string.IsNullOrWhiteSpace(rdpGateway))
+//{
+//    rdp.TransportSettings3.GatewayHostname = rdpGateway;
+//    rdp.TransportSettings3.GatewayUsageMethod = 1;
+//    rdp.TransportSettings3.GatewayCredsSource = 0;
+//    rdp.TransportSettings3.GatewayProfileUsageMethod = 1;
+//}
+
+//rdp.Connect();
