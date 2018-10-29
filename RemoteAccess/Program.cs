@@ -73,9 +73,10 @@ namespace RemoteAccess
             Console.WriteLine();
             string encrypt = aes.EncryptString(text);
             Console.WriteLine(encrypt);
-            File.WriteAllText("P01.txt", encrypt);
+            File.WriteAllText("..\\..\\P01.txt", encrypt);
 
             Console.WriteLine("p01 text created");
+
 
         }
 
