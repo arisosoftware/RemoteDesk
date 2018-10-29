@@ -35,18 +35,7 @@ namespace ArisoTool
             }
         }
 
-
-        public   string SerializeFromString<T>(  T toSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, toSerialize);
-                return textWriter.ToString();
-            }
-        }
-
+         
 
 
         public string key = "12345678901234567890123456789012";

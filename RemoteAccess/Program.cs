@@ -6,20 +6,125 @@ using System.Net;
 using ArisoTool;
 using System.Xml.Serialization;
 using System.IO;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace RemoteAccess
 {
-    class Program
+   public class Program
     {
 
         static
             AES aes = new AES();
 
+
+
+        public static void RemoteConnect(MSTSCConfig cfg)
+        {
+         
+
+                AxMSTSCLib.AxMsRdpClient4 rdpc = new AxMSTSCLib.AxMsRdpClient4();
+
+                rdpc.UserName = cfg.usrname;
+                rdpc.AdvancedSettings2.ClearTextPassword = cfg.password;
+                rdpc.Server = cfg.ServerIP;
+                rdpc.AdvancedSettings2.RDPPort = int.Parse(cfg.PortNum);
+                rdpc.Domain = ".";
+                rdpc.Connect();
+                
+                //////AxMSTSCLib.AxMsTscAxNotSafeForScripting remoteserver = new AxMSTSCLib.AxMsTscAxNotSafeForScripting();
+         
+                //////// 
+                //////// RDP
+                //////// 
+                //////remoteserver.UserName = cfg.usrname;
+
+                //////remoteserver.Server = cfg.ServerIP;
+                 
+                //////remoteserver.SecuredSettings.FullScreen = 1;
+                //////remoteserver.AdvancedSettings.Compress = 1;
+
+                //////MSTSCLib.IMsTscNonScriptable secured = (MSTSCLib.IMsTscNonScriptable)remoteserver.SecuredSettings;
+                //////secured.ClearTextPassword = cfg.password;
+                //////remoteserver.Connect();
+
+            
+        }
+
+       public  static void ReadAndRemoteLogin()
+        {
+
+
+            WebClient webclientForIP = new WebClient();
+
+
+            string IPdefine = File.ReadAllText("..\\..\\P01.txt");
+     
+
+         //   string IPdefine = webclientForIP.DownloadString("https://raw.githubusercontent.com/arisosoftware/RemoteDesk/master/RemoteAccess/P01.txt");
+            string decoded = aes.DecryptString(IPdefine);
+            Console.WriteLine(decoded);
+
+       
+            MSTSCConfig cfg = SerializeFromString(decoded) as MSTSCConfig;
+
+            RemoteConnect(cfg);
+
+
+            //MSTSCLib.IMsRdpClient7 client = n 
+
+
+            //var rdpGateway = "gw.domain.local";
+            //var rdpServer = "rdsh.domain.local";
+
+            //rdp.Server = rdpServer;
+            //rdp.AdvancedSettings7.EnableCredSspSupport = true;
+            //rdp.AdvancedSettings8.NegotiateSecurityLayer = true;
+            //rdp.AdvancedSettings7.AuthenticationLevel = 0;
+
+            //if (!string.IsNullOrWhiteSpace(rdpGateway))
+            //{
+            //    rdp.TransportSettings3.GatewayHostname = rdpGateway;
+            //    rdp.TransportSettings3.GatewayUsageMethod = 1;
+            //    rdp.TransportSettings3.GatewayCredsSource = 0;
+            //    rdp.TransportSettings3.GatewayProfileUsageMethod = 1;
+            //}
+
+            //rdp.Connect();
+
+        }
+
+        public static object SerializeFromString(string fromSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof( MSTSCConfig));
+
+            using (StringReader textReader = new StringReader(fromSerialize))
+            {
+                object obj = xmlSerializer.Deserialize(textReader);
+                return obj;
+            }
+        }
+
+          [STAThread]
         static void Main(string[] args)
         {
 
 
-            CreateRDSKeyFile();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+
+            if (args.Length > 1)
+            {
+
+                CreateRDSKeyFile();
+
+            }
+            else
+            {
+                ReadAndRemoteLogin();
+            }
 
 
             //https://gitee.com/huaant/pv01/blob/master/P01.txt
