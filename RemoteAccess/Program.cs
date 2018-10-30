@@ -164,9 +164,9 @@ namespace RemoteAccess
 
 
             cfg.PortNum = DefaultSetup(cfg.PortNum, "3389");
-            cfg.ServerIP = DefaultSetup(cfg.ServerIP, "23.100.96.142");
+            cfg.ServerIP = DefaultSetup(cfg.ServerIP, "40.74.83.17");
             cfg.usrname = DefaultSetup(cfg.usrname, ".\\superqiu");
-            cfg.password = DefaultSetup(cfg.password, "111111AAAAAA@");
+            cfg.password = DefaultSetup(cfg.password, "111111.aaaaaa");
 
 
             string text = aes.SerializeToString(cfg);
