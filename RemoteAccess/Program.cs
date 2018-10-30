@@ -59,10 +59,10 @@ namespace RemoteAccess
             WebClient webclientForIP = new WebClient();
 
 
-            string IPdefine = File.ReadAllText("..\\..\\P01.txt");
+           // string IPdefine = File.ReadAllText("..\\..\\P01.txt");
 
 
-            //   string IPdefine = webclientForIP.DownloadString("https://raw.githubusercontent.com/arisosoftware/RemoteDesk/master/RemoteAccess/P01.txt");
+            string IPdefine = webclientForIP.DownloadString("https://raw.githubusercontent.com/arisosoftware/RemoteDesk/master/RemoteAccess/P01.txt");
             string decoded = aes.DecryptString(IPdefine);
             Console.WriteLine(decoded);
 
@@ -74,10 +74,10 @@ namespace RemoteAccess
            file =  file.Replace("ServerIP", cfg.ServerIP);
             File.WriteAllText("server.RDP", file);
 
-            Console.WriteLine("请 输入密码 111111AAAAAA@  或者 control -P 复制");
+        //    Console.WriteLine("请 输入密码 111111.aaaaaa  或者 control -P 复制");
 
+             
 
-            Clipboard.SetDataObject("111111AAAAAA@");
 
             //// try again...
             //System.Diagnostics.Process proc = new System.Diagnostics.Process();
